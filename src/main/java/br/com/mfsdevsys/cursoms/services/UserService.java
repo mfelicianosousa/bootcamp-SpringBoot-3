@@ -4,11 +4,13 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import br.com.mfsdevsys.cursoms.dto.UserUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,15 +27,16 @@ import br.com.mfsdevsys.cursoms.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService {
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder ;
 	
 	@Autowired
 	private UserRepository repository;
 	
 	@Autowired
 	private RoleRepository roleRepository;
-	
 
-	
 	@Transactional(readOnly=true)
 	public Page<UserDTO> findAllPaged(Pageable pageable){
 		
@@ -41,8 +44,7 @@ public class UserService {
 		return list.map(x -> new UserDTO(x));
 		
 	}
-	
-		
+
 	@Transactional(readOnly=true)	
 	public UserDTO findById(Long id) {
 		
@@ -56,14 +58,13 @@ public class UserService {
 	public UserDTO insert(@RequestBody UserInsertDTO dto){
 		User entity = new User();
 		copyDtoToEntity(dto, entity);
-		//entity.setPassword( passwordEncoder.encode( dto.getPassword()));
+		entity.setPassword( passwordEncoder.encode( dto.getPassword()));
 		entity = repository.save(entity) ;
 		return new UserDTO(entity);
 	}
-	
-	
+
 	@Transactional
-	public UserDTO update(Long id, UserDTO dto) {
+	public UserDTO update(Long id, UserUpdateDTO dto) {
 		try {
 			User entity = repository.getOne(id) ;
 			// User entity = repository.getReferenceById(id); # 2.7.6
@@ -91,9 +92,7 @@ public class UserService {
 		entity.setFirstName(dto.getFirstName());
 		entity.setLastName(dto.getLastName());
 		entity.setEmail(dto.getEmail());
-		entity.setStatus(dto.getStatus());
 	
-		
 		entity.getRoles().clear();
 		for (RoleDTO roleDTO: dto.getRoles()) {
 			//Role role = roleRepository.getReferenceById(roleDTO.getId()) ;

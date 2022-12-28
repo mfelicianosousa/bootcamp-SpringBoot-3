@@ -11,18 +11,14 @@ import javax.validation.constraints.NotBlank;
 import br.com.mfsdevsys.cursoms.domain.User;
 
 public class UserDTO implements Serializable {
-	
 	private static final long serialVersionUID = 1L;
-	
 	private Long id;
-	
 	@NotBlank(message = "Campo obrigátorio")
 	private String firstName;
 	private String lastName;
 	
 	@Email(message="Favor entrar com email válido.")
 	private String email;
-	private Boolean status;
 	
 	Set<RoleDTO> roles = new HashSet<>();
 
@@ -30,21 +26,20 @@ public class UserDTO implements Serializable {
 		
 	}
 	
-	public UserDTO(Long id, String firstName, String lastName, String email, Boolean status) {
+	public UserDTO(Long id, String firstName, String lastName, String email) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.status = status;
 	}
 	
 	public UserDTO(User entity) {
 		id = entity.getId();
-		firstName = entity.getEmail();
+		firstName = entity.getFirstName();
 		lastName = entity.getLastName();
 		email = entity.getEmail();
-		status = entity.getStatus();
-		entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
+		// Trazer os roles para a memoria
+		entity.getRoles().forEach(role -> this.roles.add(new RoleDTO( role )));
 	}
 
 	public Long getId() {
@@ -79,14 +74,6 @@ public class UserDTO implements Serializable {
 		this.email = email;
 	}
 
-	public Boolean getStatus() {
-		return status;
-	}
-
-	public void setStatus(Boolean status) {
-		this.status = status;
-	}
-	
 	public Set<RoleDTO> getRoles() {
 		return roles;
 	}

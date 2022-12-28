@@ -30,16 +30,15 @@ public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	
 	@Column(nullable=false, length =60)
 	private String firstName;
 	
 	@Column(nullable=true, length =60)
 	private String lastName;
 	
-	@Column(nullable=false, length =100)
+	@Column(nullable=false, length =100, unique=true)
 	private String email;
-	
-	private Boolean status;
 	
 	@Column(nullable=false)
 	private String password;
@@ -51,7 +50,7 @@ public class User implements Serializable {
 	private Instant updatedAt;
 	
 	@JsonBackReference
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER) // Forçar sempre que buscar um usuário trazer os roles (perfil)
 	@JoinTable(name="user_role",
 	   joinColumns=@JoinColumn(name="user_id"),
 	   inverseJoinColumns=@JoinColumn(name="role_id"))
@@ -60,12 +59,11 @@ public class User implements Serializable {
 	public User() {
 	}
 	
-	public User(Long id, String firstName, String lastName, String email, Boolean status, String password) {
+	public User(Long id, String firstName, String lastName, String email, String password) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.status = status;
 		this.password = password;
 	}
 
@@ -101,14 +99,6 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public Boolean getStatus() {
-		return status;
-	}
-
-	public void setStatus(Boolean status) {
-		this.status = status;
-	}
-
 	public String getPassword() {
 		return password;
 	}
@@ -125,8 +115,6 @@ public class User implements Serializable {
 		return updatedAt;
 	}
 	
-	
-
 	public Set<Role> getRoles() {
 		return roles;
 	}

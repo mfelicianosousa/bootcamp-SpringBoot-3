@@ -1,17 +1,18 @@
 package br.com.mfsdevsys.cursoms.dto;
 
-public class UserInsertDTO extends UserDTO{
+import br.com.mfsdevsys.cursoms.services.validation.UserInsertValid;
 
+@UserInsertValid
+public class UserInsertDTO extends UserDTO{
 	private static final long serialVersionUID = 1L;
 	
 	private String password;
 	
 	public UserInsertDTO() {
-		super();
+
 	}
 	
 	public UserInsertDTO(String password) {
-		super();
 		this.password = password;
 	}
 

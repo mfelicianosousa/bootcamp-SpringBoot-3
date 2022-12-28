@@ -5,6 +5,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import br.com.mfsdevsys.cursoms.dto.UserUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,17 +61,16 @@ public class UserResource {
 	@PostMapping
 	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO dto){
 		UserDTO newDto = service.insert( dto );
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
+		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/{id}").
 				buildAndExpand(newDto.getId()).toUri();
 		
 		return ResponseEntity.created(uri).body(newDto);
 	}
 	
 	@PutMapping(value="/{id}")
-	public ResponseEntity<UserDTO> update(@PathVariable Long id,@Valid @RequestBody UserDTO dto){
-		dto = service.update( id, dto );
-			
-		return ResponseEntity.ok().body(dto);
+	public ResponseEntity<UserDTO> update(@PathVariable Long id,@Valid @RequestBody UserUpdateDTO dto){
+		UserDTO newDto = service.update( id, dto );
+		return ResponseEntity.ok().body(newDto);
 	}
 	
 	@DeleteMapping(value="/{id}")

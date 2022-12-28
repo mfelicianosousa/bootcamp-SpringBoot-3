@@ -41,6 +41,8 @@ public class ResourceExceptionHandler {
 		error.setPath(request.getRequestURI());
 		return ResponseEntity.status(status).body(error);
 	}
+	
+	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, HttpServletRequest request){
 		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY ;
